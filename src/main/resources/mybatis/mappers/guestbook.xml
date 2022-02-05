@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="guestbook">
+
+	<!-- ResultMap -->
+	<resultMap id="mapguestbookVo" type="GuestbookVo">
+		<result column="no" property="no" />
+		<result column="name" property="name" />
+		<result column="password" property="password" />
+		<result column="content" property="content" />
+		<result column="reg_date" property="regDate" />
+	</resultMap>
+
+	<!-- selectList -->
+	<select id="selectList" resultMap="mapguestbookVo">
+		<![CDATA[
+		select  no,
+		        name,
+		        password,
+		        content,
+        		to_char(reg_date, 'yyyy-mm-dd hh24:mi:ss') reg_date
+		from guestbook
+		ORDER BY reg_date desc
+		]]>
+
+	</select>
+
+	<insert id="insert" parameterType="GuestbookVo">
+		<![CDATA[
+		INSERT INTO guestbook
+		VALUES(SEQ_GUESTBOOK_NO.nextval, 
+				#{name}, 
+				#{password},
+				#{content},
+				  SYSDATE)
+		]]>
+	</insert>
+
+	<delete id="delete" parameterType="GuestbookVo">
+		<![CDATA[
+		DELETE FROM guestbook
+		WHERE no = #{no}
+		AND password = #{password}
+		]]>
+	</delete>
+
+	<!-- 방명록 글 저장 selectkey -->
+	<insert id="insertSelectKey" parameterType="GuestbookVo">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select seq_guestbook_no.nextval from dual
+		</selectKey>
+		<![CDATA[
+		INSERT INTO guestbook
+		VALUES(#{no},
+				#{name}, 
+				#{password},
+				#{content},
+				  SYSDATE)
+		]]>
+	</insert>
+
+	<!-- 방명록 글1개 가져오기 -->
+   <select id="selectByNo" parameterType="int" resultType="com.javaex.vo.GuestbookVo">
+      <![CDATA[
+         select no, name, password, content, reg_date regDate
+         from guestbook
+         where no = #{no}
+      ]]>
+   </select>
+
+
+</mapper>
