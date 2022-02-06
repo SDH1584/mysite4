@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gallery">
+
+	<select id="selectList" resultType="GalleryVo">
+	<![CDATA[
+	select  ga.no gno,
+			conten,
+	        filePath,
+	        orgName,
+	        saveName,
+	        fileSize,
+	        to_char(reg_date, 'yy-mm-dd hh24:mi') reg_date,
+	        us.no uno,
+	        us.id id,
+	        us.name name
+	from gallery ga, users us
+	where us.no = ga.user_no
+	order by reg_date desc
+	]]>
+	</select>
+
+	<!-- 갤러리 (글no 코멘트 파일경로 원본파일명 저장파일명 파일사이즈 등록일 작성자no) -->
+	<insert id="insertImage" parameterType="GalleryVo">
+	<![CDATA[
+	INSERT INTO gallery VALUES (seq_gallery_no.nextval
+								#{content}, 
+								#{filePath},
+								#{orgName},
+								#{saveName},
+								#{fileSize},
+								sysdate,
+								#{uno}
+	)
+	]]>
+	</insert>
+
+	<!-- 유저번호와 글번호가 일치하면 삭제 -->
+	<delete id="deleteImage" parameterType="GalleryVo">
+	<![CDATA[
+	DELETE FROM gallery
+	WHERE	user_no = #{uno} 
+	and		no = #{gno}
+	]]>
+	</delete>
+
+
+
+
+</mapper>

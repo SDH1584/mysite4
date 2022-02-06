@@ -6,12 +6,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.javaex.dao.GalleryDao;
+import com.javaex.vo.GalleryVo;
+
 @Service
 public class GalleryService {
-
+	
+@Autowired
+GalleryDao galleryDao;
+	
 	public String upload(MultipartFile file) {
 		System.out.println("galleryService.upload");
 		String saveDir = "C:\\javaStudy\\upload";
@@ -46,5 +53,24 @@ public class GalleryService {
 		}
 		return saveName;
 	}
+	public GalleryVo getGallery(int no) {
+		System.out.println("[GalleryService.getGallery()]");
+		return getGallery(no);
+	}
+
+	public GalleryVo readImage(int gno) {
+		System.out.println("GalleryService.readImage ");
+		GalleryVo galleryVo = galleryDao.readImage(gno);
+		 return galleryVo;
+	}
 	
+	public void insImage(GalleryVo galleryVo) {
+		System.out.println("GalleryService.insImage ");
+		galleryDao.insImage(galleryVo);
+	}
+	
+	public void delImage(GalleryVo galleryVo) {
+		System.out.println("GalleryService.delImage ");
+		galleryDao.delImage(galleryVo);
+	}
 }

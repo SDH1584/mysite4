@@ -152,20 +152,41 @@
 </body>
 
 <script type="text/javascript">
-
-$("#btnImgUpload").on("click", ".btnDelPop", function() {
-	//이미지올리기
-	var $this = $(this);
-	var no = $this.data("no");//대문자 사용 금지
-	console.log(no);
-
-	//초기화
-	$("#addModalContent").val("");
-	$("#file").val(no);
-
-	$("#btnImgUpload").modal('show');
-
+$("#btnImgUpload").on("click", function() {
+	console.log("모달클릭");
+	$('#addModal').modal('show');
 });
+//사진을 클릭했을때
+$(".imgshow").on(
+		"click",
+		function() {
+			console.log("이미지클릭");
+			var $this = $(this);
+			var no = $this.data('no');
+			$.ajax({
+				//요청할때
+				url : "${pageContext.request.contextPath}/gallery/read",
+				type : "post",
+				//contentType : "application/json",
+				data : {
+					no : no
+				},
+				//응답받을때
+				//dataType : "json",
+				success : function(galleryVo) {
+					console.log(galleryVo)
+					$('#viewModelImg').attr(
+							'src',
+							'${pageContext.request.contextPath}/upload/'
+									+ galleryVo.saveName);
+					$("#viewModelContent").html('<strong>'+galleryVo.content+'</strong>');
+					$('#viewModal').modal('show');
+				},
+				error : function(XHR, status, error) {
+					console.error(status + " : " + error);
+				}
+			});
+		});
 
 
 </script>
