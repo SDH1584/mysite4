@@ -14,28 +14,33 @@ public class GalleryDao {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public List<GalleryVo> getList() {
-		System.out.println("[GalleryDao.getList()]");
+	public List<GalleryVo> galleryList() {
+		System.out.println("[GalleryDao.galleryList()]");
 		
-		List<GalleryVo> galleryList = sqlSession.selectList("gallery.getGalleryList");
+		List<GalleryVo> galleryList = sqlSession.selectList("gallery.galleryList");
 		return galleryList;
 	}
-	public GalleryVo readImage(int gno) {
+	public GalleryVo readImg(int gno) {
 
-		System.out.println("GalleryDao.readImage");
-		GalleryVo galleryVo = sqlSession.selectOne("gallery.readImage", gno);
+		System.out.println("GalleryDao.readImg");
+		GalleryVo galleryVo = sqlSession.selectOne("gallery.readImg", gno);
 		return galleryVo;
 	
 	}
-	public void insImage(GalleryVo galleryVo) {
-		System.out.println("GalleryDao.insImage");
-		sqlSession.insert("gallery.insImage");
-	}
+	public int upload (GalleryVo galleryVo) {
+		System.out.println("GalleryDao.insertFile()"+galleryVo);
+		int count = sqlSession.insert("gallery.insImg", galleryVo);
+		System.out.println(count + "건이 추가 되었습니다.");
+		return count;
+}
+
  
-	public void delImage(GalleryVo galleryVo) {
-		System.out.println("GalleryDao.delImage");
-		sqlSession.delete("gallery.delImage");
+	public int delImg(int no) {
+		int count = sqlSession.selectOne("gallery.delImg", no);
+		System.out.println(count+"건이 삭제 되었습니다.");
+		return count;
 	}
+
 	
 	
 }
