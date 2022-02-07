@@ -62,7 +62,7 @@ public class BoardService {
 		int endRnum = (startRnum + listCnt) - 1;
 		
 
-		List<BoardVo> getBoardList = boardDao.getBoardList2(startRnum, endRnum);
+		List<BoardVo> boardList = boardDao.getBoardList2(startRnum, endRnum);
 		
 		// 전체 글갯수가져오기
 		int totalCnt = boardDao.selectTotal();
@@ -85,14 +85,14 @@ public class BoardService {
 		boolean next = false;
 		if (endPageBtnNo * listCnt < totalCnt) {
 			next = true;
+		}else {// 다음화살표가 안보이면 마지막버튼값 재계산
+			endPageBtnNo = (int) Math.ceil(totalCnt / (double) listCnt);
 		}
 		// 이전화살표 유무
 		boolean prev = false;
 		if (startPageBtnNo != 1) {
 			prev = true;
-		} else {// 다음화살표가 안보이면 마지막버튼값 재계산
-			endPageBtnNo = (int) Math.ceil(totalCnt / (double) listCnt);
-		}
+		} 
 
 		/////////////
 		// 포장//
@@ -102,11 +102,9 @@ public class BoardService {
 		pMap.put("startPageBtnNo", startPageBtnNo);
 		pMap.put("endPageBtnNo", endPageBtnNo);
 		pMap.put("next", next);
-		pMap.put("getBoardList", getBoardList());
-
-		System.out.println("----------------");
-		System.out.println(pMap);
-		System.out.println("----------------");
+		pMap.put("boardList", boardList);
+		System.out.print(pMap);
+		
 		return pMap;
 
 	}

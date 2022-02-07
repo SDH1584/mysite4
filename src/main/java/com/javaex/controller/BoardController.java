@@ -20,66 +20,41 @@ import com.javaex.vo.UserVo;
 @Controller
 @RequestMapping(value = "/board", method = { RequestMethod.GET, RequestMethod.POST })
 public class BoardController {
+
 	@Autowired
 	private BoardService boardService;
 
-	//리스트 가져오기
 	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public String list(Model model) {
-		System.out.println("[BoardController.list()");
+		System.out.println("[BoardController.list()]");
 
 		List<BoardVo> boardList = boardService.getBoardList();
+
 		model.addAttribute("boardList", boardList);
 
 		return "/board/list";
 	}
-	//리스트 페이징
+	
+	// 리스트 + 페이징
 	@RequestMapping(value = "/list2", method = { RequestMethod.GET, RequestMethod.POST })
-	public String list2(Model model ,
-						@RequestParam(value ="crtPage", required = false, defaultValue = "1")int crtPage) {
-		System.out.println("[BoardController.list2()");
+	public String list2(Model model, 
+						@RequestParam(value = "crtPage", required = false, defaultValue = "1") int crtPage) {
+		System.out.println("[BoardController.list2()]");
 		System.out.println(crtPage);
-		//해당 페이지의 글 리스트 10개
+		
+		//해당페이지의 글 리스트 10
 		Map<String, Object> pMap = boardService.getBoardList2(crtPage);
-		System.out.println(pMap);
 		
-		System.out.println("----boardContoller------");
-		System.out.println(pMap);
-		System.out.println("--------------------------");
+		model.addAttribute("pMap", pMap);
 		
-		//model.addAttribute("boardList", boardList);
-		
-		return "board/list";
-	}
-	
-	
-	//게시글 읽기
-	@RequestMapping(value = "/read", method = { RequestMethod.GET, RequestMethod.POST })
-	public String read(@RequestParam("no") int no, Model model) {
-		System.out.println("[BoardController.read()");
-
-		BoardVo boardVo = boardService.getRead(no);
-
-		model.addAttribute("boardVo", boardVo);
-
-		return "/board/read";
+		return "/board/list";
 	}
 
-	//게시글 삭제
-	@RequestMapping(value = "/delete", method = { RequestMethod.GET, RequestMethod.POST })
-	public String delete(@RequestParam("no") int no) {
-		System.out.println("[BoardController.delete()");
-
-		boardService.boardDelete(no);
-
-		return "redirect:/board/list";
-	}
-
-	//게시글작성폼
 	@RequestMapping(value = "/writeForm", method = { RequestMethod.GET, RequestMethod.POST })
 	public String writeForm(HttpSession session) {
-		System.out.println("[BoardController.writeForm()");
-		UserVo authUser = (UserVo) session.getAttribute("authUser");
+		System.out.println("[BoardController.writeForm()]");
+		
+		UserVo authUser = (UserVo)session.getAttribute("authUser");
 		if (authUser != null) {
 			return "/board/writeForm";
 		} else {
@@ -87,41 +62,54 @@ public class BoardController {
 		}
 	}
 
-	//게시글 작성
 	@RequestMapping(value = "/write", method = { RequestMethod.GET, RequestMethod.POST })
-	public String write(HttpSession session, @RequestParam("title") String title,
-			@RequestParam("content") String content) {
-		System.out.println("[BoardController.write()");
+	public String write(@ModelAttribute BoardVo boardVo,
+						HttpSession session) {
+		System.out.println("[BoardController.write()]");
 
-		UserVo authUser = (UserVo) session.getAttribute("authUser");
-		BoardVo boardVo = new BoardVo();
-		boardVo.setTitle(title);
-		boardVo.setContent(content);
+		UserVo authUser = (UserVo)session.getAttribute("authUser");
 		boardVo.setUserNo(authUser.getNo());
 		boardService.boardInsert(boardVo);
 
-		return "redirect:/board/list";
-	}	
-	
-	//게시글 수정폼 
+		return "redirect:/board/list2";
+	}
+
+	@RequestMapping(value = "/read", method = { RequestMethod.GET, RequestMethod.POST })
+	public String read(@RequestParam("no") int no, Model model) {
+		System.out.println("[BoardController.read()]");
+
+		BoardVo boardVo = boardService.getRead(no);
+		model.addAttribute("boardVo", boardVo);
+
+		return "/board/read";
+	}
+
+	@RequestMapping(value = "/delete", method = { RequestMethod.GET, RequestMethod.POST })
+	public String delete(@RequestParam("no") int no) {
+		System.out.println("[BoardController.delete()]");
+
+		boardService.boardDelete(no);
+
+		return "redirect:/board/list2";
+	}
+
 	@RequestMapping(value = "/modifyForm", method = { RequestMethod.GET, RequestMethod.POST })
 	public String modifyForm(@RequestParam("no") int no, Model model) {
 		System.out.println("[BoardController.modifyForm()");
 
 		BoardVo boardVo = boardService.getRead(no);
-
 		model.addAttribute("boardVo", boardVo);
 
 		return "/board/modifyForm";
 	}
 
-	//게시글수정
 	@RequestMapping(value = "/modify", method = { RequestMethod.GET, RequestMethod.POST })
 	public String modify(@ModelAttribute BoardVo boardVo) {
-		System.out.println("[BoardController.modify()");
+		System.out.println("[BoardController.modify()]");
 
 		boardService.boardUpdate(boardVo);
 
-		return "redirect:/board/list";
+		return "redirect:/board/list2";
 	}
+
 }

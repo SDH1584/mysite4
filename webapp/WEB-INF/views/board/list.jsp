@@ -67,7 +67,7 @@
 								</c:forEach>
 							</tbody>
 						</table>
-					<div id="paging">
+						<div id="paging">
 							<ul>
 								<c:if test="${pMap.prev == true}">
 									<li><a href="${pageContext.request.contextPath}/board/list2?crtPage=${pMap.startPageBtnNo-1}">◀</a></li>

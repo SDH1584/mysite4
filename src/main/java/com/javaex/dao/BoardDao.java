@@ -19,7 +19,7 @@ public class BoardDao {
 	public List<BoardVo> getBoardList() {
 		System.out.println("[BoardDao.getList()]");
 		
-		return sqlSession.selectList("board.getBoardList");
+		return sqlSession.selectList("board.BoardList");
 	}
 	
 	//글리스트가져오기 리스트 페이징
@@ -31,7 +31,7 @@ public class BoardDao {
 		map.put("startRnum", startRnum);
 		map.put("endRnum",endRnum);
 		
-		return 	sqlSession.selectList("board.getBoardList2",map);
+		return 	sqlSession.selectList("board.BoardList2",map);
 		
 	}
 	
