@@ -141,9 +141,7 @@
 						<form method="" action="">
 							<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
-							<c:if test="${!(empty authUser)}">
 							<button type="button" class="btn btn-danger" id="btnDel">삭제</button>
-							</c:if>
 						</div>
 						</form>
 							<input id="modalNo" type="text" name="no" value="${galleryVo.no}">
@@ -196,33 +194,30 @@
 		});
 	
 	});
-	
-	$("#btnDel").on("click", function(){
-		console.log("삭제");
-		
-		var $this = $(this);
-		var no = $this.data("no");
-
+	//삭제버튼
+	$("#btnDel").on("click", function() {
+		console.log("삭제클릭");
 		$.ajax({
-				//요청할때
-				url : "${pageContext.request.contextPath}/gallery/remove",// 주소.    
-				type : "post",//get, post(어차피 차이 없음)
-				//contentType : "application/json",
-				
-				//파라미터로 보낼때 객체로 보내야 한다
-				data : {no : no},
+			url: "${pageContext.request.contextPath}/gallery/delete",
+			type : "post",
+			//contentType: "application/json",
+			data : {no : no},
 			
-				//응답받을때
-				//dataType : "json",
-				success : function(result) {//json --> js로 변환되서 result에 담김
-					
-						$("#viewModal").modal("hide");
-						$("#li"+no).remove();
-					
-				},
-				error : function(XHR, status, error) {
-					console.error(status + " : " + error);
+			dataType: "json",
+			success : function(result) {
+				/*성공시 처리해야될 코드 작성*/
+				console.log(result);
+				if (result=="success") {
+					$("#img"+no).remove();
+					$("#viewModal").modal('hide');
 				}
+				else {
+					$("#viewModal").modal('hide');
+				}
+			},
+			error : function(XHR, status, error) {
+				console.error(status + " : " + error);
+			}
 		});
 		
 	});

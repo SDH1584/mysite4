@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="board">
-	<select id="getList" parameterType="BoardVo" resultType="BoardVo">
+	<select id="getBoardList" parameterType="BoardVo" resultType="BoardVo">
 		<![CDATA[
 			select   us.name name,
 			         bo.no no,
@@ -15,6 +15,46 @@
 			order by bo.no desc
 		]]>
 	</select>
+	<!-- 글리스트 가져오기 리스트 페이징 -->
+	<select id="getBoardList2" parameterType="map" resultType="com.javaex.vo.BoardVo">
+			<![CDATA[
+			select  rt.rn,
+					rt.no,
+			        rt.title,
+			        rt.content,
+			        rt.hit,
+			        rt.regDate,
+			        rt.userNo,
+			        rt.name
+	                from(select rownum rn,
+	                			ot.no,
+	                            ot.title,
+	                            ot.content,
+	                            ot.hit,
+	                            ot.regDate,
+	                            ot.userNo,
+	                            ot.name 
+		                    from  (select   b.no,
+		                                    b.title,
+		                                    b.content,
+		                                    b.hit,
+		                                    to_char( b.reg_date,'YYYY-MM-DD HH:MI:SS' )regDate,
+		                                    b.user_no userNo,
+		                                    u.name 
+		                            from board b ,users u
+		                            where b.user_no=u.no
+		                            order by b.no desc
+	                            )ot 
+	                        )rt
+			where rn>=#{startRnum}
+			and rn<=#{endRnum}
+				
+			
+			
+			]]>
+
+	</select>
+
 	<select id="getRead" parameterType="int" resultType="BoardVo">
 		<![CDATA[
 			select   us.name name,
@@ -28,6 +68,17 @@
 			where    bo.user_no = us.no
 			and		 bo.no = #{num}
 		]]>
+	</select>
+
+	<!-- 전체글 카운트 -->
+	<select id="totalCnt" resultType="int">
+		<![CDATA[
+			select count (*)
+			from board b , users u
+			where b.user_no=u.no
+		
+		]]>
+
 	</select>
 
 	<update id="hitup" parameterType="int">

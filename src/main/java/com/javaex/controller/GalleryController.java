@@ -33,7 +33,7 @@ public class GalleryController {
 		return "gallery/list";
 	}
 	//사진업로드
-	@RequestMapping("upload")
+	@RequestMapping("/upload")
 	public String upload(@ModelAttribute GalleryVo galleryVo,@RequestParam("file")MultipartFile file, Model model,HttpSession session) {
 		System.out.println("gallery upload");
 		

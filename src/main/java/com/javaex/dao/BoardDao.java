@@ -1,6 +1,8 @@
 package com.javaex.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,25 @@ public class BoardDao {
 	private SqlSession sqlSession;
 
 	//리스트가져오기
-	public List<BoardVo> getList() {
+	public List<BoardVo> getBoardList() {
 		System.out.println("[BoardDao.getList()]");
 		
-		return sqlSession.selectList("board.getList");
+		return sqlSession.selectList("board.getBoardList");
 	}
+	
+	//글리스트가져오기 리스트 페이징
+	public List<BoardVo> getBoardList2(int startRnum ,int endRnum){
+		System.out.println("[BoardDao.getBoardList2()]");
+		System.out.println(startRnum+","+endRnum);
+		
+		Map<String,Integer> map=new HashMap<String,Integer>();
+		map.put("startRnum", startRnum);
+		map.put("endRnum",endRnum);
+		
+		return 	sqlSession.selectList("board.getBoardList2",map);
+		
+	}
+	
 	
 	//선택 게시글 읽기
 		public BoardVo getread(int no) {
@@ -50,5 +66,11 @@ public class BoardDao {
 		int count = sqlSession.update("board.boardUpdate", boardVo);
 		System.out.println("["+count+"건이 수정되었습니다]");
 	}	
-		
+	
+	//전체글갯수가져오기
+	public int selectTotal() {
+		System.out.println("boardDao.selectTotal");
+	
+		return sqlSession.selectOne("board.totalCnt");
+	}
 }
