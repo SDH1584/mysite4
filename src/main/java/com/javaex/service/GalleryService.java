@@ -18,33 +18,37 @@ import com.javaex.vo.GalleryVo;
 public class GalleryService {
 
 	@Autowired
-	GalleryDao galleryDao;
+	private GalleryDao galleryDao;
 
-	public void upload(MultipartFile file, GalleryVo galleryVo) {
-		System.out.println("galleryService.upload");
-		String saveDir = "C:\\javaStudy\\upload";
+	public List<GalleryVo> list() {
+		System.out.println("[GalleryService.list()]");
+		
+		return galleryDao.getList();
+	}
+	public int restore(MultipartFile file, GalleryVo galleryVo) {
+		System.out.println("[GalleryService.restore()]");
+	
+		String saveDir = "C:\\javaStudy\\upload\\";
 
-		// 파일관련 정보 추출
-
-		// 원본파일이름
+		//원본파일이름
 		String orgName = file.getOriginalFilename();
 		galleryVo.setOrgName(orgName);
-		// 확장자
-		String exName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-
-		// 저장파일이름
+		
+		//확장자
+		String exName = orgName.substring(orgName.lastIndexOf("."));
+		
+		//저장파일이름
 		String saveName = System.currentTimeMillis() + UUID.randomUUID().toString() + exName;
 		galleryVo.setSaveName(saveName);
-
-		// 파일패스 생성
-		String filePath = saveDir + "\\" + saveName;
+		
+		//파일패스(저장될 장소)
+		String filePath = saveDir +"\\"+ saveName;
 		galleryVo.setFilePath(filePath);
-
-		// 파일 사이즈
+		
+		//파일사이즈,크기
 		long fileSize = file.getSize();
 		galleryVo.setFileSize(fileSize);
-
-		// ***파일 저장(업로드)
+		
 		try {
 			byte[] fileData = file.getBytes();
 			OutputStream out = new FileOutputStream(filePath);
@@ -55,27 +59,17 @@ public class GalleryService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		galleryDao.upload(galleryVo);
+		
+		return galleryDao.save(galleryVo);
 	}
-
-	// 리스트
-	public List<GalleryVo> getGalleryList() {
-
-		System.out.println("guestbookService.getGusetList()");
-
-		return galleryDao.galleryList();
+	
+	public GalleryVo getGallery(int no) {
+		System.out.println("[GalleryService.getGallery()]");
+		return galleryDao.getGallery(no);
 	}
-
-	// 읽기
-	public GalleryVo readImg(int gno) {
-		System.out.println("GalleryService.readImg ");
-		GalleryVo galleryVo = galleryDao.readImg(gno);
-		return galleryVo;
-	}
-
-	// 삭제
-	public int delImg(int no) {
-		System.out.println("GalleryService.delImg ");
-		return galleryDao.delImg(no);
+	
+	public int delete(int no) {
+		System.out.println("[GalleryService.delete()]");
+		return galleryDao.delete(no);
 	}
 }

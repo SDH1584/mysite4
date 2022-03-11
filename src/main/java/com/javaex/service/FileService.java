@@ -14,7 +14,7 @@ public class FileService {
 
 	public String restore(MultipartFile file) {
 		System.out.println("FileService.restore()");
-		String saveDir = "C:\\javaStudy\\upload";
+		String saveDir = "C:\\javaStudy\\upload\\";
 
 		// 파일관련 정보 추출
 

@@ -46,7 +46,8 @@
 							</div>
 							<a id="btn_cancel" href="">취소</a>
 							<button id="btn_add" type="submit">등록</button>
-							<input type="text" name="no" value="${sessionScope.authUser.no}"> <input type="text" name="name" value="${sessionScope.authUser.name}">
+							<input type="hidden" name="no" value="${sessionScope.authUser.no}"> 
+							<input type="hidden" name="name" value="${sessionScope.authUser.name}">
 						</form>
 						<!-- //form -->
 					</div>

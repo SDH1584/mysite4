@@ -33,13 +33,6 @@ public class BoardService {
 	public void boardInsert(BoardVo boardVo) {
 		System.out.println("[BoardService.boardInsert()]");
 		boardDao.boardInsert(boardVo);
-		/*
-		 * // 페이징 데이타 추가 123개 for(int i=1; i<=123;i++) { boardVo.setTitle(
-		 * i+"번째 글제목입니다"); boardVo.setContent(i+"번째글 내용입니다"); boardVo.setHit(0);
-		 * boardVo.setUserNo(1); boardDao.boardInsert(boardVo);
-		 * 
-		 * }
-		 */
 	}
 
 	// 페이징 작성

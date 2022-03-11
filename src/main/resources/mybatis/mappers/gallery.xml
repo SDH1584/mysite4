@@ -4,47 +4,44 @@
 
 <mapper namespace="gallery">
 
-	<select id="galleryList" resultType="GalleryVo">
-	<![CDATA[
-			select ga.no no,
-			       ga.user_no userNo,
-			       us.name name,
-			       content content,
-			       saveName,
-			       fileSize 
-			from gallery ga, users us
-            where ga.user_no = us.no
-		
-			
-	]]>
+	<select id="getGalleryList" resultType="GalleryVo">
+		<![CDATA[
+			 select   ga.no,
+			          ga.user_no userNo,
+			          us.name,
+			          ga.content,
+			          ga.filePath,
+			          ga.orgName,
+			          ga.saveName,
+			          ga.fileSize
+			 from     gallery ga, users us
+			 where    ga.user_no = us.no
+			 order by no desc
+		]]>
 	</select>
-
-	<select id="readImg" parameterType="int" resultType="com.javaex.vo.GalleryVo">
-   		 	<![CDATA[
+	<select id="getGallery" parameterType="int" resultType="GalleryVo">
+ 	<![CDATA[
 		   	select no,
 			       user_no userNo,
 			       content,
-			       saveName
+			       saveName,
+			       filePath
 			from gallery
 			where no = #{no}
 		]]>
 	</select>
-
-	<insert id="insImg" parameterType="GalleryVo">
-	<![CDATA[
-   			insert into gallery
+	
+	<insert id="galleryInsert" parameterType="GalleryVo">
+		<![CDATA[
+			insert into gallery
 			values(seq_gallery_no.nextval, #{userNo}, #{content}, #{filePath}, #{orgName}, #{saveName}, #{fileSize})
-   		]]>
+		]]>
 	</insert>
-
-	<delete id="delImg" parameterType="int">
-	<![CDATA[
-		delete from gallery
-		where no = #{no}
-	]]>
+	
+	<delete id="galleryDelete" parameterType="GalleryVo">
+		<![CDATA[
+			delete from gallery
+			where no = #{no}
+		]]>
 	</delete>
-
-
-
-
 </mapper>

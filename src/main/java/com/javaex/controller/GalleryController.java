@@ -15,48 +15,51 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.javaex.service.GalleryService;
 import com.javaex.vo.GalleryVo;
+import com.javaex.vo.UserVo;
+
 @Controller
 @RequestMapping("/gallery")
 public class GalleryController {
 
 	@Autowired
 	private GalleryService galleryService;
-	
-	//리스틍 읽어오기
+
 	@RequestMapping("/list")
 	public String list(Model model) {
-		System.out.println("gallery List");
-		List<GalleryVo> galleryList = galleryService.getGalleryList();
-		
+		System.out.println("[GalleryController.list()]");
+
+		List<GalleryVo> galleryList = galleryService.list();
 		model.addAttribute("galleryList", galleryList);
-		
-		return "gallery/list";
+
+		return "/gallery/list";
 	}
-	//사진업로드
+
 	@RequestMapping("/upload")
-	public String upload(@ModelAttribute GalleryVo galleryVo,@RequestParam("file")MultipartFile file, Model model,HttpSession session) {
-		System.out.println("gallery upload");
-		
-		galleryService.upload(file, galleryVo);
-			
-		return "gallery/list";
-		
+	public String upload(MultipartFile file, HttpSession session, @ModelAttribute GalleryVo galleryVo) {
+		System.out.println("[GalleryController.upload()]");
+
+		UserVo authUser = (UserVo) session.getAttribute("authUser");
+		if (authUser != null) {
+			galleryVo.setUserNo(authUser.getNo());
+			galleryService.restore(file, galleryVo);
+			return "redirect:/gallery/list";
+		} else {
+			return "redirect:/";
+		}
 	}
-	//사진 읽어오기
+
 	@ResponseBody
 	@RequestMapping("/read")
 	public GalleryVo read(@RequestParam("no") int no) {
 		System.out.println("[GalleryController.getGallery()]");
-		GalleryVo galleryVo = galleryService.readImg(no);
+		GalleryVo galleryVo = galleryService.getGallery(no);
 		return galleryVo;
 	}
-	//삭제
-	@ResponseBody
-	@RequestMapping("/remove")
-	public int remove(@RequestParam("no") int no) {
-		
-		System.out.println("remove()"); 
-			return  galleryService.delImg(no);
-	}
 	
+	@ResponseBody
+	@RequestMapping("/delete")
+	public int delete(@RequestParam("no") int no) {
+		System.out.println("[GalleryController.delete()]");
+		return galleryService.delete(no);
+	}
 }
